@@ -11,22 +11,43 @@ export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [mindmapData, setMindmapData] = useState(null);
 
-  // Redirect if not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      navigate("/sign-in"); // Clerk sign-in page
+      navigate("/sign-in");
     }
   }, [isSignedIn, isLoaded, navigate]);
 
-  // Wait until user info is loaded
-  if (!isLoaded || !isSignedIn) return null; // or a loading spinner
+  if (!isLoaded || !isSignedIn) return null;
 
   return (
-    <section className="max-w-5xl mx-auto px-6 py-10">
-      <h2 className="text-3xl font-bold text-center mb-6">Dashboard</h2>
-      <FileUploader setSummary={setSummary} setMindmapData={setMindmapData} />
-      {summary && <SummaryView summary={summary} />}
-      {mindmapData && <MindMap data={mindmapData} />}
+    <section className="w-full flex justify-center items-start min-h-screen px-4 sm:px-6 lg:px-8 mt-32 mb-12">
+      <div className="w-full max-w-5xl space-y-12 rounded-2xl backdrop-blur-2xl border border-white/10 bg-white/10 text-white p-6 sm:p-8 md:p-12">
+        
+        {/* Page Header */}
+        <h2 className="text-3xl sm:text-4xl font-semibold text-center">
+          Upload Your File Here
+        </h2>
+
+        {/* File Uploader */}
+        <FileUploader
+          setSummary={setSummary}
+          setMindmapData={setMindmapData}
+        />
+
+        {/* Summary View */}
+        {summary && (
+          <div className="p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 mt-24">
+            <SummaryView summary={summary} />
+          </div>
+        )}
+
+        {/* Mind Map */}
+        {mindmapData && (
+          <div className="p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 mt-24 overflow-x-auto">
+            <MindMap data={mindmapData} />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

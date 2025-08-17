@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -118,3 +117,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+body{
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  @apply bg-background text-foreground;
+
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
