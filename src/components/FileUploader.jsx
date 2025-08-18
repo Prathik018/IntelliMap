@@ -89,7 +89,7 @@ export default function FileUploader() {
           <div className="mt-6 flex flex-col gap-4">
             <div>
               <h2 className="text-xl font-bold mb-2">Summary</h2>
-              <p className="text-sm sm:text-base text-justify hyphens-auto">{mindmap.summary}</p>
+              <p className="text-sm sm:text-base text-justify">{mindmap.summary}</p>
             </div>
 
             <div>
