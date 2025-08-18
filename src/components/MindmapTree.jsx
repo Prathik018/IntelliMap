@@ -51,7 +51,10 @@ export default function MindmapTree({ data }) {
       {selectedSummary && (
         <div className="mt-4 p-4 bg-gray-200 rounded shadow">
           <h3 className="font-bold mb-2">Section Summary</h3>
-          <p className="text-justify">{selectedSummary}</p>
+          <p className="text-justify hyphens-auto">{selectedSummary}</p>
+
+ 
+
         </div>
       )}
     </>
