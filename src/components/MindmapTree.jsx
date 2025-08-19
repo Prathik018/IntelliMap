@@ -19,18 +19,23 @@ export default function MindmapTree({ data }) {
     }
   }, [data]);
 
-  // 🔹 Handlers for dragging & updates
-  const onNodesChange = (changes) => setNodes((nds) => applyNodeChanges(changes, nds));
-  const onEdgesChange = (changes) => setEdges((eds) => applyEdgeChanges(changes, eds));
+  //  Handlers for dragging & updates
+  const onNodesChange = (changes) =>
+    setNodes((nds) => applyNodeChanges(changes, nds));
+  const onEdgesChange = (changes) =>
+    setEdges((eds) => applyEdgeChanges(changes, eds));
 
-  // 🔹 Handle node click
+  //  Handle node click
   const handleNodeClick = (event, node) => {
-    setSelectedSummary(node.data.summary || "No summary available for this section.");
+    setSelectedSummary(
+      node.data.summary || "No summary available for this section."
+    );
   };
 
   return (
     <>
-      <div style={{ width: "100%", height: "75vh" }}>
+      {/* Responsive wrapper for all screen sizes */}
+      <div className="w-full min-h-[60vh] h-[75vh] lg:h-[85vh] flex-grow overflow-auto">
         <ReactFlow
           nodes={nodes.map((n) => ({ ...n, selectable: true }))}
           edges={edges}
@@ -49,19 +54,15 @@ export default function MindmapTree({ data }) {
       </div>
 
       {selectedSummary && (
-        <div className="mt-4 p-4 bg-gray-200 rounded shadow">
+        <div className="mt-4 p-4 bg-gray-200 rounded shadow max-w-full">
           <h3 className="font-bold mb-2">Section Summary</h3>
           <p className="text-justify hyphens-auto">{selectedSummary}</p>
-
- 
-
         </div>
       )}
     </>
   );
 }
 
-// -------- Radial Layout with spacing --------
 function buildRadialMindmap(data) {
   const nodes = [];
   const edges = [];
@@ -72,7 +73,7 @@ function buildRadialMindmap(data) {
   const rootId = "root";
   nodes.push({
     id: rootId,
-    data: { label: data.name, summary: data.summary || "" }, 
+    data: { label: data.name, summary: data.summary || "" },
     position: { x: 0, y: 0 },
     style: {
       background: "#2563eb",
@@ -101,7 +102,7 @@ function buildRadialMindmap(data) {
       const nodeId = `${parentId}-${i}`;
       nodes.push({
         id: nodeId,
-        data: { label: child.name, summary: child.summary || "" }, 
+        data: { label: child.name, summary: child.summary || "" },
         position: { x, y },
         style: {
           background: "#fff",
@@ -122,7 +123,13 @@ function buildRadialMindmap(data) {
       });
 
       if (child.children) {
-        placeChildren(child.children, nodeId, level + 1, currentAngle, currentAngle + angleStep);
+        placeChildren(
+          child.children,
+          nodeId,
+          level + 1,
+          currentAngle,
+          currentAngle + angleStep
+        );
       }
 
       currentAngle += angleStep + minAngle;
@@ -136,7 +143,6 @@ function buildRadialMindmap(data) {
   return { nodes, edges };
 }
 
-// -------- Colors per depth --------
 function pickColor(level) {
   const colors = [
     "#6366f1", // indigo

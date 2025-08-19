@@ -6,7 +6,7 @@ export async function parseFile(file) {
   const name = file.name || "document";
   const ext = name.split(".").pop()?.toLowerCase();
 
-  // For demo: try to read as text. Many .docx/.pptx/.pdf won’t parse directly this way.
+  // try to read as text. Many .docx/.pptx/.pdf won’t parse directly this way.
   // Replace with real parsers in your next step.
   if (ext === "txt") {
     return await file.text();

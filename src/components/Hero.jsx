@@ -47,15 +47,11 @@ export default function Hero() {
       </div>
       <br />
 
-
-
-
       {/* Why Use IntelliMap Section */}
       <div
         className="relative z-10 mt-24 w-full max-w-6xl px-6 py-12 rounded-2xl backdrop-blur-lg bg-white/10 text-white"
         data-aos="fade-up"
         data-aos-duration="2500"
-
       >
         <h2 className="text-2xl sm:text-3xl font-semibold mb-8 text-center">
           Why Use IntelliMap Mapping Tool
@@ -98,10 +94,6 @@ export default function Hero() {
 
       <br />
 
-
-
-
-
       {/* How It Works Section */}
       <div
         className="relative z-10 mt-24 w-full max-w-6xl px-6 py-12 rounded-2xl backdrop-blur-2xl border border-white/10 bg-white/10 text-white text-justify"
@@ -123,10 +115,9 @@ export default function Hero() {
           your document, highlighting the most important details and insights.
           Whether you're studying, preparing for meetings, or reviewing lengthy
           reports, everything you need is summarized and visualized in one
-          easy-to-use interface. No manual effort required just upload, let the AI do the work, and
-          explore your content in a more intuitive way.
+          easy-to-use interface. No manual effort required just upload, let the
+          AI do the work, and explore your content in a more intuitive way.
         </p>
-        
       </div>
 
       <br />

@@ -3,7 +3,6 @@
   import { useEffect, useState } from "react";
   import FileUploader from "@/components/FileUploader";
   import MindMap from "@/components/MindMap";
-  import SummaryView from "@/components/SummaryView";
 
   export default function Dashboard() {
     const { isSignedIn, isLoaded } = useUser();
@@ -21,7 +20,7 @@
 
     return (
       <section className="w-full flex justify-center items-start min-h-screen px-4 sm:px-6 lg:px-8 mt-32 mb-12">
-        <div className="w-full max-w-5xl space-y-12 rounded-2xl backdrop-blur-2xl border border-white/10 bg-white/10 text-white p-6 sm:p-8 md:p-12">
+        <div className="w-full max-w-6xl space-y-10 rounded-2xl backdrop-blur-2xl border border-white/10 bg-white/10 text-white p-6 sm:p-8 md:p-12">
           
           {/* Page Header */}
           <h2 className="text-3xl sm:text-4xl font-semibold text-center">
@@ -36,7 +35,7 @@
 
           {/* Summary View */}
           {summary && (
-            <div className="p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 mt-24">
+            <div className="p-6 rounded-xl bg-white/10  backdrop-blur-md border border-white/20 mt-24">
               <SummaryView summary={summary} />
             </div>
           )}

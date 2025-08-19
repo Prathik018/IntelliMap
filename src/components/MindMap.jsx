@@ -1,11 +1,8 @@
-// src/components/MindmapTree.jsx
 import React, { useMemo } from "react";
 import ReactFlow, { Background, Controls } from "reactflow";
 import "reactflow/dist/style.css";
 
-/**
- * Convert your mindmap JSON into nodes & edges for ReactFlow
- */
+
 function buildNodesAndEdges(data, parentId = null, nodes = [], edges = [], depth = 0, pos = { x: 0, y: 0 }) {
   const id = nodes.length + 1 + "";
   const node = {
