@@ -19,7 +19,7 @@ export async function processFile(file) {
   }
 
   // Call Gemini to summarize + build mindmap JSON
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
   const prompt = `
 You are an assistant that generates structured mind map data.
 From the following text, create a JSON object with two fields: "summary" and "mindmap".
