@@ -18,11 +18,12 @@ export async function processFile(file) {
     throw new Error("Could not extract meaningful text from file");
   }
 
-  // Call Gemini to summarize + build mindmap JSON
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  // Use stable Gemini model
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
   const prompt = `
 You are an assistant that generates structured mind map data.
-From the following text, create a JSON object with two fields: "summary" and "mindmap".
+From the following text, create a JSON object with fields: "summary" and "mindmap".
 
 The "mindmap" must follow this schema:
 
@@ -46,28 +47,34 @@ Text:
 ${text}
 `;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  let output = response.text();
+  // New correct format for v1beta API
+  const result = await model.generateContent({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: prompt }]
+      }
+    ]
+  });
 
-  // Remove accidental ```json ... ``` wrappers if Gemini adds them
-  output = output.replace(/```json|```/g, "").trim();
+  const output = result.response.text().trim();
+
+  // Clean accidental code fences
+  const cleanOutput = output.replace(/```json|```/g, "").trim();
 
   let parsed;
   try {
-    parsed = JSON.parse(output);
+    parsed = JSON.parse(cleanOutput);
   } catch (err) {
-    console.error("Failed to parse Gemini response:", output);
-    throw new Error(
-      "Failed to parse Gemini response as JSON: " + err.message
-    );
+    console.error("Failed JSON:", cleanOutput);
+    throw new Error("Gemini returned invalid JSON: " + err.message);
   }
 
   return parsed;
 }
 
 
-// file extraction 
+// file extraction
 async function extractText(file) {
   const ext = file.name.split(".").pop().toLowerCase();
   const reader = new FileReader();
@@ -89,12 +96,15 @@ async function extractText(file) {
           resolve(reader.result);
 
         } else if (ext === "docx") {
-          const { value } = await mammoth.extractRawText({ arrayBuffer: reader.result });
+          const { value } = await mammoth.extractRawText({
+            arrayBuffer: reader.result,
+          });
           resolve(value);
 
         } else if (ext === "doc") {
-          // Old DOC files: use mammoth as fallback
-          const { value } = await mammoth.extractRawText({ arrayBuffer: reader.result });
+          const { value } = await mammoth.extractRawText({
+            arrayBuffer: reader.result,
+          });
           resolve(value);
 
         } else if (ext === "pptx") {
@@ -107,10 +117,11 @@ async function extractText(file) {
           for (const filename of slideFiles) {
             const xml = await zip.files[filename].async("string");
             const parsed = await parseStringPromise(xml);
-            const texts = parsed["p:sld"]["p:cSld"][0]["p:spTree"][0]["p:sp"] || [];
+            const shapes =
+              parsed["p:sld"]["p:cSld"][0]["p:spTree"][0]["p:sp"] || [];
 
-            texts.forEach((t) => {
-              const paras = t["p:txBody"]?.[0]["a:p"] || [];
+            shapes.forEach((shape) => {
+              const paras = shape["p:txBody"]?.[0]["a:p"] || [];
               paras.forEach((p) => {
                 const runs = p["a:r"] || [];
                 runs.forEach((r) => {
@@ -122,7 +133,6 @@ async function extractText(file) {
           resolve(text);
 
         } else if (ext === "ppt") {
-          // Old PPT files: simple fallback
           reject(
             new Error(
               "Old .ppt format not supported. Please use .pptx for PowerPoint files."
@@ -131,9 +141,7 @@ async function extractText(file) {
 
         } else {
           reject(
-            new Error(
-              "Unsupported file type. Use PDF, TXT, DOC, DOCX, or PPTX"
-            )
+            new Error("Unsupported file type. Use PDF, TXT, DOC, DOCX, or PPTX")
           );
         }
       } catch (err) {
@@ -143,7 +151,7 @@ async function extractText(file) {
 
     reader.onerror = reject;
 
-    if (ext === "pdf" || ext === "docx" || ext === "doc" || ext === "pptx") {
+    if (["pdf", "docx", "doc", "pptx"].includes(ext)) {
       reader.readAsArrayBuffer(file);
     } else {
       reader.readAsText(file);
