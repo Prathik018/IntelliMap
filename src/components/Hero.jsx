@@ -6,12 +6,9 @@ import {
   Zap,
   Brain,
   Share2,
-  Shield,
   FileText,
-  Layout,
   CheckCircle,
   ArrowRight,
-  Play,
   Sparkles
 } from "lucide-react";
 
@@ -93,9 +90,9 @@ export default function Hero() {
               <SignInButton mode="modal">
                 <Button
                   size="lg"
-                  className="h-12 px-8 text-base bg-white text-black hover:bg-gray-100 rounded-full shadow-lg shadow-white/10 transition-all hover:scale-105"
+                  className="h-12 px-8 text-base bg-white text-black hover:bg-gray-200 rounded-full shadow-lg shadow-white/10 transition-all hover:scale-105"
                 >
-                  Get Started Free
+                  Get Started Free!
                 </Button>
               </SignInButton>
             )}
@@ -103,41 +100,85 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Visual Demo Placeholder - Modern Animated Version */}
+
+        {/* Visual Demo Placeholder*/}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative max-w-5xl mx-auto mt-20 mb-32"
+          className="relative max-w-5xl mx-auto mt-12 sm:mt-16 md:mt-20 mb-20 sm:mb-24 md:mb-32 px-4 sm:px-0"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10" />
-          <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-500/10 group">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent z-10 pointer-events-none" />
+          <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-500/10 group">
             <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors duration-500" />
             <div className="aspect-video bg-[#0a0a0a]/50 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
 
               {/* Background Grid */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px] sm:bg-[size:28px_28px] md:bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-              {/* Central Animation Container */}
-              <div className="relative w-full h-full flex items-center justify-center">
+              {/* Central Animation Container with CSS variables for responsive positioning */}
+              <div
+                className="relative w-full h-full flex items-center justify-center"
+                style={{
+                  '--orbit-x-mobile': '70px',
+                  '--orbit-y-mobile': '45px',
+                  '--orbit-x-tablet': '120px',
+                  '--orbit-y-tablet': '80px',
+                  '--orbit-x-desktop': '180px',
+                  '--orbit-y-desktop': '120px',
+                }}
+              >
 
-                {/* Connecting Lines SVG */}
+                {/* Connecting Lines SVG - Responsive */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none">
                   {[...Array(6)].map((_, i) => {
                     const angle = (i / 6) * Math.PI * 2;
+                    const x = Math.cos(angle);
+                    const y = Math.sin(angle);
+
                     return (
-                      <motion.line
-                        key={i}
-                        x1="50%" y1="50%"
-                        x2={`${50 + Math.cos(angle) * 20}%`}
-                        y2={`${50 + Math.sin(angle) * 35}%`}
-                        stroke="rgba(255,255,255,0.1)"
-                        strokeWidth="2"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        animate={{ pathLength: 1, opacity: 1 }}
-                        transition={{ delay: 1 + i * 0.1, duration: 0.8 }}
-                      />
+                      <g key={i}>
+                        {/* Mobile lines */}
+                        <motion.line
+                          x1="50%"
+                          y1="50%"
+                          x2={`calc(50% + ${x * 70}px)`}
+                          y2={`calc(50% + ${y * 45}px)`}
+                          stroke="rgba(255,255,255,0.1)"
+                          strokeWidth="1.5"
+                          className="sm:hidden"
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          animate={{ pathLength: 1, opacity: 1 }}
+                          transition={{ delay: 1 + i * 0.1, duration: 0.8 }}
+                        />
+                        {/* Tablet lines */}
+                        <motion.line
+                          x1="50%"
+                          y1="50%"
+                          x2={`calc(50% + ${x * 120}px)`}
+                          y2={`calc(50% + ${y * 80}px)`}
+                          stroke="rgba(255,255,255,0.1)"
+                          strokeWidth="1.75"
+                          className="hidden sm:block md:hidden"
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          animate={{ pathLength: 1, opacity: 1 }}
+                          transition={{ delay: 1 + i * 0.1, duration: 0.8 }}
+                        />
+                        {/* Desktop lines */}
+                        <motion.line
+                          x1="50%"
+                          y1="50%"
+                          x2={`calc(50% + ${x * 180}px)`}
+                          y2={`calc(50% + ${y * 120}px)`}
+                          stroke="rgba(255,255,255,0.1)"
+                          strokeWidth="2"
+                          className="hidden md:block"
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          animate={{ pathLength: 1, opacity: 1 }}
+                          transition={{ delay: 1 + i * 0.1, duration: 0.8 }}
+                        />
+                      </g>
                     );
                   })}
                 </svg>
@@ -147,65 +188,158 @@ export default function Hero() {
                   initial={{ scale: 0.5, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="relative z-20 w-24 h-24 bg-[#0a0a0a] border border-blue-500/30 rounded-2xl flex items-center justify-center shadow-[0_0_50px_-10px_rgba(59,130,246,0.3)]"
+                  className="relative z-20 w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-[#0a0a0a] border border-blue-500/30 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] sm:shadow-[0_0_50px_-10px_rgba(59,130,246,0.3)]"
                 >
-                  <FileText className="w-10 h-10 text-blue-400" />
+                  <FileText className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-blue-400" />
                   {/* Scanning Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-400/10 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-400/10 to-transparent rounded-xl sm:rounded-2xl"
                     animate={{ top: ['-100%', '100%'] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                   />
                 </motion.div>
 
-                {/* Orbiting Nodes */}
-                {[...Array(6)].map((_, i) => {
-                  const angle = (i / 6) * Math.PI * 2;
-                  const x = Math.cos(angle) * 180;
-                  const y = Math.sin(angle) * 120;
+                {/* Orbiting Nodes - Mobile (sm:hidden) */}
+                <div className="sm:hidden">
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i / 6) * Math.PI * 2;
+                    const x = Math.cos(angle) * 70;
+                    const y = Math.sin(angle) * 45;
 
-                  return (
-                    <motion.div
-                      key={i}
-                      className="absolute z-10"
-                      initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
-                      animate={{
-                        x: x,
-                        y: y,
-                        opacity: 1,
-                        scale: 1
-                      }}
-                      transition={{
-                        delay: 1 + i * 0.1,
-                        type: "spring",
-                        stiffness: 100
-                      }}
-                    >
-                      <div className="w-14 h-14 rounded-xl bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
-                        <div className={`w-3 h-3 rounded-full ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_10px_currentColor]`} />
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute z-10"
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                        }}
+                        initial={{ x: -18, y: -18, opacity: 0, scale: 0 }}
+                        animate={{
+                          x: x - 18,
+                          y: y - 18,
+                          opacity: 1,
+                          scale: 1
+                        }}
+                        transition={{
+                          delay: 1 + i * 0.1,
+                          type: "spring",
+                          stiffness: 100
+                        }}
+                      >
+                        <div className="w-9 h-9 rounded-lg bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
+                          <div className={`w-2 h-2 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Orbiting Nodes - Tablet (hidden sm:block md:hidden) */}
+                <div className="hidden sm:block md:hidden">
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i / 6) * Math.PI * 2;
+                    const x = Math.cos(angle) * 120;
+                    const y = Math.sin(angle) * 80;
+
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute z-10"
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                        }}
+                        initial={{ x: -24, y: -24, opacity: 0, scale: 0 }}
+                        animate={{
+                          x: x - 24,
+                          y: y - 24,
+                          opacity: 1,
+                          scale: 1
+                        }}
+                        transition={{
+                          delay: 1 + i * 0.1,
+                          type: "spring",
+                          stiffness: 100
+                        }}
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
+                          <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Orbiting Nodes - Desktop (hidden md:block) */}
+                <div className="hidden md:block">
+                  {[...Array(6)].map((_, i) => {
+                    const angle = (i / 6) * Math.PI * 2;
+                    const x = Math.cos(angle) * 180;
+                    const y = Math.sin(angle) * 120;
+
+                    return (
+                      <motion.div
+                        key={i}
+                        className="absolute z-10"
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                        }}
+                        initial={{ x: -28, y: -28, opacity: 0, scale: 0 }}
+                        animate={{
+                          x: x - 28,
+                          y: y - 28,
+                          opacity: 1,
+                          scale: 1
+                        }}
+                        transition={{
+                          delay: 1 + i * 0.1,
+                          type: "spring",
+                          stiffness: 100
+                        }}
+                      >
+                        <div className="w-14 h-14 rounded-xl bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
+                          <div className={`w-3 h-3 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
 
               </div>
 
               {/* Browser Header */}
-              <div className="absolute top-0 left-0 right-0 h-12 border-b border-white/5 bg-white/5 backdrop-blur-md flex items-center px-6 gap-2">
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              <div className="absolute top-0 left-0 right-0 h-9 sm:h-10 md:h-12 border-b border-white/5 bg-white/5 backdrop-blur-md flex items-center px-3 sm:px-4 md:px-6 gap-2">
+                <div className="flex gap-1.5 sm:gap-2">
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full ${
+                        i === 0 ? 'bg-red-500/80' : i === 1 ? 'bg-yellow-500/80' : 'bg-green-500/80'
+                      }`}
+                      initial={{ y: 0 }}
+                      animate={{ y: [0, -4, 0] }} 
+                      transition={{
+                        duration: 0.8,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: i * 0.1, 
+                      }}
+                    />
+                  ))}
                 </div>
-                <div className="ml-4 px-4 py-1 rounded-full bg-white/5 border border-white/5 text-[10px] text-gray-500 font-mono flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                  intellimap.ai/demo
+                <div className="ml-2 sm:ml-3 md:ml-4 px-2 sm:px-3 md:px-4 py-0.5 sm:py-1 rounded-full bg-white/5 border border-white/5 text-[8px] sm:text-[9px] md:text-[10px] text-gray-500 font-mono flex items-center gap-1 sm:gap-2">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500 animate-pulse" />
+                  <span className="hidden sm:inline">intellimap.ai/demo</span>
+                  <span className="sm:hidden">demo</span>
                 </div>
               </div>
 
             </div>
           </div>
         </motion.div>
+
 
         {/* Features Grid - Bento Style */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
@@ -262,8 +396,22 @@ export default function Hero() {
         <div className="mt-32">
           <h2 className="text-3xl md:text-5xl font-bold text-center mb-16">From File to Insight in 3 Steps</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {/* Connector Line (Desktop) */}
-            <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+            {/* Connector Line*/}
+            <motion.div
+              className="hidden md:block absolute top-12 left-0 w-full h-0.5"
+              initial={{ backgroundPosition: '-300% 0' }}
+              animate={{ backgroundPosition: '300% 0' }}
+              transition={{
+                duration: 8,
+                ease: "linear",
+                repeat: Infinity,
+                repeatType: "loop"
+              }}
+              style={{
+                background: 'linear-gradient(90deg, transparent, #3b82f6, #a855f7, #f472b6, transparent)',
+                backgroundSize: '400% 100%',
+              }}
+            />
 
             {[
               { icon: FileText, title: "Upload", desc: "Drag & drop your PDF, DOCX, or PPTX file." },
@@ -311,14 +459,13 @@ export default function Hero() {
                 <SignInButton mode="modal">
                   <Button
                     size="lg"
-                    className="h-14 px-8 text-lg bg-white text-blue-600 hover:bg-gray-100 rounded-full font-bold shadow-xl hover:scale-105 transition"
+                    className="h-14 px-8 text-lg bg-white text-blue-600 hover:bg-gray-100 rounded-full font-bold shadow-xl hover:scale-105 transition animate-bounce"
                   >
                     Get Started for Free
                   </Button>
                 </SignInButton>
               )}
             </div>
-            <p className="mt-6 text-sm text-blue-200">No credit card required • Free tier available</p>
           </div>
         </div>
 
