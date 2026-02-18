@@ -18,8 +18,7 @@ export async function processFile(file) {
     throw new Error("Could not extract meaningful text from file");
   }
 
-  // Use stable Gemini model
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
   const prompt = `
 You are an assistant that generates structured mind map data.

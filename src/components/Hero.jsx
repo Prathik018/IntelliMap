@@ -63,10 +63,7 @@ export default function Hero() {
           animate="visible"
           className="flex flex-col items-center text-center max-w-4xl mx-auto"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8 hover:bg-white/10 transition-colors cursor-default">
-            <Sparkles className="w-4 h-4 text-yellow-400" />
-            <span className="text-sm font-medium text-gray-300">AI-Powered Mind Mapping</span>
-          </motion.div>
+
 
           <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/50">
             Transform Chaos into <br />
@@ -315,16 +312,15 @@ export default function Hero() {
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
-                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full ${
-                        i === 0 ? 'bg-red-500/80' : i === 1 ? 'bg-yellow-500/80' : 'bg-green-500/80'
-                      }`}
+                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full ${i === 0 ? 'bg-red-500/80' : i === 1 ? 'bg-yellow-500/80' : 'bg-green-500/80'
+                        }`}
                       initial={{ y: 0 }}
-                      animate={{ y: [0, -4, 0] }} 
+                      animate={{ y: [0, -4, 0] }}
                       transition={{
                         duration: 0.8,
                         repeat: Infinity,
                         ease: "easeInOut",
-                        delay: i * 0.1, 
+                        delay: i * 0.1,
                       }}
                     />
                   ))}
