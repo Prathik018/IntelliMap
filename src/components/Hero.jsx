@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { useUser, SignInButton } from "@clerk/clerk-react";
-import { motion } from "framer-motion";
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { useUser, SignInButton } from '@clerk/clerk-react';
+import { motion } from 'framer-motion';
 import {
   Zap,
   Brain,
@@ -9,17 +9,17 @@ import {
   FileText,
   CheckCircle,
   ArrowRight,
-  Sparkles
-} from "lucide-react";
+  Sparkles,
+} from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -28,10 +28,10 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
-      stiffness: 100
-    }
-  }
+      type: 'spring',
+      stiffness: 100,
+    },
+  },
 };
 
 export default function Hero() {
@@ -44,8 +44,11 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
 
       {/* Noise Overlay */}
-      <div className="absolute inset-0 opacity-20 mix-blend-soft-light pointer-events-none z-10"
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+      <div
+        className="absolute inset-0 opacity-20 mix-blend-soft-light pointer-events-none z-10"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
       />
 
       {/* Background Gradients */}
@@ -63,23 +66,32 @@ export default function Hero() {
           animate="visible"
           className="flex flex-col items-center text-center max-w-4xl mx-auto"
         >
-
-
-          <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/50">
+          <motion.h1
+            variants={itemVariants}
+            className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-white/50"
+          >
             Transform Chaos into <br />
             <span className="text-blue-400">Crystal Clear Clarity</span>
           </motion.h1>
 
-          <motion.p variants={itemVariants} className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
-            Upload any document and watch as our advanced AI instantly constructs beautiful, interactive mind maps. Understand complex topics in seconds, not hours.
+          <motion.p
+            variants={itemVariants}
+            className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed"
+          >
+            Upload any document and watch as our advanced AI instantly
+            constructs beautiful, interactive mind maps. Understand complex
+            topics in seconds, not hours.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+          >
             {isSignedIn ? (
               <Button
                 size="lg"
                 className="h-12 px-8 text-base bg-blue-600 hover:bg-blue-500 text-white rounded-full shadow-lg shadow-blue-500/25 transition-all hover:scale-105"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate('/dashboard')}
               >
                 Launch Dashboard <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
@@ -93,10 +105,8 @@ export default function Hero() {
                 </Button>
               </SignInButton>
             )}
-
           </motion.div>
         </motion.div>
-
 
         {/* Visual Demo Placeholder*/}
         <motion.div
@@ -110,7 +120,6 @@ export default function Hero() {
           <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 shadow-2xl shadow-blue-500/10 group">
             <div className="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors duration-500" />
             <div className="aspect-video bg-[#0a0a0a]/50 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
-
               {/* Background Grid */}
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:20px_20px] sm:bg-[size:28px_28px] md:bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
@@ -126,7 +135,6 @@ export default function Hero() {
                   '--orbit-y-desktop': '120px',
                 }}
               >
-
                 {/* Connecting Lines SVG - Responsive */}
                 <svg className="absolute inset-0 w-full h-full pointer-events-none">
                   {[...Array(6)].map((_, i) => {
@@ -192,7 +200,11 @@ export default function Hero() {
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-400/10 to-transparent rounded-xl sm:rounded-2xl"
                     animate={{ top: ['-100%', '100%'] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'linear',
+                    }}
                   />
                 </motion.div>
 
@@ -216,16 +228,18 @@ export default function Hero() {
                           x: x - 18,
                           y: y - 18,
                           opacity: 1,
-                          scale: 1
+                          scale: 1,
                         }}
                         transition={{
                           delay: 1 + i * 0.1,
-                          type: "spring",
-                          stiffness: 100
+                          type: 'spring',
+                          stiffness: 100,
                         }}
                       >
                         <div className="w-9 h-9 rounded-lg bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
-                          <div className={`w-2 h-2 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                          <div
+                            className={`w-2 h-2 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`}
+                          />
                         </div>
                       </motion.div>
                     );
@@ -252,16 +266,18 @@ export default function Hero() {
                           x: x - 24,
                           y: y - 24,
                           opacity: 1,
-                          scale: 1
+                          scale: 1,
                         }}
                         transition={{
                           delay: 1 + i * 0.1,
-                          type: "spring",
-                          stiffness: 100
+                          type: 'spring',
+                          stiffness: 100,
                         }}
                       >
                         <div className="w-12 h-12 rounded-xl bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
-                          <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                          <div
+                            className={`w-2.5 h-2.5 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`}
+                          />
                         </div>
                       </motion.div>
                     );
@@ -288,22 +304,23 @@ export default function Hero() {
                           x: x - 28,
                           y: y - 28,
                           opacity: 1,
-                          scale: 1
+                          scale: 1,
                         }}
                         transition={{
                           delay: 1 + i * 0.1,
-                          type: "spring",
-                          stiffness: 100
+                          type: 'spring',
+                          stiffness: 100,
                         }}
                       >
                         <div className="w-14 h-14 rounded-xl bg-[#0a0a0a] border border-white/10 flex items-center justify-center shadow-lg backdrop-blur-md group-hover:border-white/20 transition-colors">
-                          <div className={`w-3 h-3 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`} />
+                          <div
+                            className={`w-3 h-3 rounded-full animate-pulse ${['bg-blue-400', 'bg-purple-400', 'bg-green-400', 'bg-yellow-400', 'bg-red-400', 'bg-pink-400'][i]} shadow-[0_0_5px_currentColor]`}
+                          />
                         </div>
                       </motion.div>
                     );
                   })}
                 </div>
-
               </div>
 
               {/* Browser Header */}
@@ -312,14 +329,19 @@ export default function Hero() {
                   {[0, 1, 2].map((i) => (
                     <motion.div
                       key={i}
-                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full ${i === 0 ? 'bg-red-500/80' : i === 1 ? 'bg-yellow-500/80' : 'bg-green-500/80'
-                        }`}
+                      className={`w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 rounded-full ${
+                        i === 0
+                          ? 'bg-red-500/80'
+                          : i === 1
+                            ? 'bg-yellow-500/80'
+                            : 'bg-green-500/80'
+                      }`}
                       initial={{ y: 0 }}
                       animate={{ y: [0, -4, 0] }}
                       transition={{
                         duration: 0.8,
                         repeat: Infinity,
-                        ease: "easeInOut",
+                        ease: 'easeInOut',
                         delay: i * 0.1,
                       }}
                     />
@@ -331,17 +353,20 @@ export default function Hero() {
                   <span className="sm:hidden">demo</span>
                 </div>
               </div>
-
             </div>
           </div>
         </motion.div>
 
-
         {/* Features Grid - Bento Style */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Everything you need to visualize ideas</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">Powerful features designed to transform your document workflow into a visual experience.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Everything you need to visualize ideas
+            </h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Powerful features designed to transform your document workflow
+              into a visual experience.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -355,9 +380,13 @@ export default function Hero() {
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   <Zap className="w-6 h-6 text-blue-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Instant Visualization</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Instant Visualization
+                </h3>
                 <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-                  Transform complex PDF, Word, or PowerPoint documents into clear, structured mind maps in seconds. Our AI understands context and hierarchy.
+                  Transform complex PDF, Word, or PowerPoint documents into
+                  clear, structured mind maps in seconds. Our AI understands
+                  context and hierarchy.
                 </p>
               </div>
             </motion.div>
@@ -370,8 +399,12 @@ export default function Hero() {
               <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Brain className="w-6 h-6 text-purple-400" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Smart Summaries</h3>
-              <p className="text-gray-400">Get concise, AI-generated summaries alongside your visual maps.</p>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Smart Summaries
+              </h3>
+              <p className="text-gray-400">
+                Get concise, AI-generated summaries alongside your visual maps.
+              </p>
             </motion.div>
 
             {/* Small Feature 2 */}
@@ -383,14 +416,19 @@ export default function Hero() {
                 <Share2 className="w-6 h-6 text-green-400" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Easy Export</h3>
-              <p className="text-gray-400">Download your mind maps as high-quality images for presentations.</p>
+              <p className="text-gray-400">
+                Download your mind maps as high-quality images for
+                presentations.
+              </p>
             </motion.div>
           </div>
         </div>
 
         {/* How It Works Steps */}
         <div className="mt-32">
-          <h2 className="text-3xl md:text-5xl font-bold text-center mb-16">From File to Insight in 3 Steps</h2>
+          <h2 className="text-3xl md:text-5xl font-bold text-center mb-16">
+            From File to Insight in 3 Steps
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {/* Connector Line*/}
             <motion.div
@@ -399,20 +437,33 @@ export default function Hero() {
               animate={{ backgroundPosition: '300% 0' }}
               transition={{
                 duration: 8,
-                ease: "linear",
+                ease: 'linear',
                 repeat: Infinity,
-                repeatType: "loop"
+                repeatType: 'loop',
               }}
               style={{
-                background: 'linear-gradient(90deg, transparent, #3b82f6, #a855f7, #f472b6, transparent)',
+                background:
+                  'linear-gradient(90deg, transparent, #3b82f6, #a855f7, #f472b6, transparent)',
                 backgroundSize: '400% 100%',
               }}
             />
 
             {[
-              { icon: FileText, title: "Upload", desc: "Drag & drop your PDF, DOCX, or PPTX file." },
-              { icon: Brain, title: "Analyze", desc: "AI extracts key concepts and relationships." },
-              { icon: CheckCircle, title: "Explore", desc: "Interact with your new mind map instantly." },
+              {
+                icon: FileText,
+                title: 'Upload',
+                desc: 'Drag & drop your PDF, DOCX, or PPTX file.',
+              },
+              {
+                icon: Brain,
+                title: 'Analyze',
+                desc: 'AI extracts key concepts and relationships.',
+              },
+              {
+                icon: CheckCircle,
+                title: 'Explore',
+                desc: 'Interact with your new mind map instantly.',
+              },
             ].map((step, i) => (
               <motion.div
                 key={i}
@@ -439,15 +490,20 @@ export default function Hero() {
           <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-purple-400 rounded-full blur-[100px] opacity-50" />
 
           <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Ready to map your mind?</h2>
-            <p className="text-blue-100 text-lg mb-10">Join thousands of students, researchers, and professionals who are saving hours every week.</p>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              Ready to map your mind?
+            </h2>
+            <p className="text-blue-100 text-lg mb-10">
+              Join thousands of students, researchers, and professionals who are
+              saving hours every week.
+            </p>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               {isSignedIn ? (
                 <Button
                   size="lg"
                   className="h-14 px-8 text-lg bg-white text-blue-600 hover:bg-gray-100 rounded-full font-bold shadow-xl hover:scale-105 transition-transform"
-                  onClick={() => navigate("/dashboard")}
+                  onClick={() => navigate('/dashboard')}
                 >
                   Go to Dashboard
                 </Button>
@@ -464,7 +520,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

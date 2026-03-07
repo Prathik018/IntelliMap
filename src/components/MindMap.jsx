@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import ReactFlow, {
   Background,
   applyNodeChanges,
   applyEdgeChanges,
-} from "reactflow";
-import "reactflow/dist/style.css";
+} from 'reactflow';
+import 'reactflow/dist/style.css';
 
 export default function MindmapTree({ data, onNodeClick }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [selectedSummary, setSelectedSummary] = useState("");
+  const [selectedSummary, setSelectedSummary] = useState('');
 
   useEffect(() => {
     if (data) {
@@ -27,7 +27,8 @@ export default function MindmapTree({ data, onNodeClick }) {
 
   //  Handle node click
   const handleNodeClick = (event, node) => {
-    const summary = node.data.summary || "No summary available for this section.";
+    const summary =
+      node.data.summary || 'No summary available for this section.';
     setSelectedSummary(summary);
     if (onNodeClick) {
       onNodeClick(summary);
@@ -54,8 +55,6 @@ export default function MindmapTree({ data, onNodeClick }) {
           <Background color="#f3f4f6" gap={28} />
         </ReactFlow>
       </div>
-
-
     </>
   );
 }
@@ -67,19 +66,19 @@ function buildRadialMindmap(data) {
   const radiusStep = 260;
   const minAngle = 0.15;
 
-  const rootId = "root";
+  const rootId = 'root';
   nodes.push({
     id: rootId,
-    data: { label: data.name, summary: data.summary || "" },
+    data: { label: data.name, summary: data.summary || '' },
     position: { x: 0, y: 0 },
     style: {
-      background: "#2563eb",
-      color: "#fff",
-      borderRadius: "16px",
-      padding: "12px 20px",
-      fontWeight: "bold",
-      fontSize: "18px",
-      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+      background: '#2563eb',
+      color: '#fff',
+      borderRadius: '16px',
+      padding: '12px 20px',
+      fontWeight: 'bold',
+      fontSize: '18px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
     },
   });
 
@@ -99,14 +98,14 @@ function buildRadialMindmap(data) {
       const nodeId = `${parentId}-${i}`;
       nodes.push({
         id: nodeId,
-        data: { label: child.name, summary: child.summary || "" },
+        data: { label: child.name, summary: child.summary || '' },
         position: { x, y },
         style: {
-          background: "#fff",
+          background: '#fff',
           border: `2px solid ${pickColor(level)}`,
-          borderRadius: "12px",
-          padding: "8px 14px",
-          fontSize: "14px",
+          borderRadius: '12px',
+          padding: '8px 14px',
+          fontSize: '14px',
           fontWeight: 500,
         },
       });
@@ -115,7 +114,7 @@ function buildRadialMindmap(data) {
         id: `e${parentId}-${nodeId}`,
         source: parentId,
         target: nodeId,
-        type: "smoothstep",
+        type: 'smoothstep',
         style: { stroke: pickColor(level), strokeWidth: 2 },
       });
 
@@ -142,12 +141,12 @@ function buildRadialMindmap(data) {
 
 function pickColor(level) {
   const colors = [
-    "#6366f1", // indigo
-    "#f59e0b", // amber
-    "#10b981", // emerald
-    "#ef4444", // red
-    "#3b82f6", // blue
-    "#8b5cf6", // violet
+    '#6366f1', // indigo
+    '#f59e0b', // amber
+    '#10b981', // emerald
+    '#ef4444', // red
+    '#3b82f6', // blue
+    '#8b5cf6', // violet
   ];
   return colors[(level - 1) % colors.length];
 }

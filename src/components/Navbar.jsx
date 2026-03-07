@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import {
   SignedIn,
   SignedOut,
   SignInButton,
   UserButton,
-} from "@clerk/clerk-react";
+} from '@clerk/clerk-react';
 
 export default function Navbar() {
   return (
@@ -49,8 +49,8 @@ export default function Navbar() {
                 afterSignOutUrl="/"
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8 md:w-9 md:h-9"
-                  }
+                    avatarBox: 'w-8 h-8 md:w-9 md:h-9',
+                  },
                 }}
               />
             </div>

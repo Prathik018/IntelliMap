@@ -1,9 +1,14 @@
-import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Upload, File, X, FileText, FileType } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Upload, File, X, FileText, FileType } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function FileUploader({ onFileSelect, selectedFile, isProcessing, onProcess }) {
+export default function FileUploader({
+  onFileSelect,
+  selectedFile,
+  isProcessing,
+  onProcess,
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -33,7 +38,7 @@ export default function FileUploader({ onFileSelect, selectedFile, isProcessing,
 
   const clearFile = () => {
     onFileSelect(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   return (
@@ -45,9 +50,10 @@ export default function FileUploader({ onFileSelect, selectedFile, isProcessing,
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className={`relative border-2 border-dashed rounded-3xl p-10 text-center transition-all duration-300 cursor-pointer group
-              ${isDragging
-                ? "border-blue-500 bg-blue-500/10 scale-[1.02]"
-                : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+              ${
+                isDragging
+                  ? 'border-blue-500 bg-blue-500/10 scale-[1.02]'
+                  : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
               }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -66,13 +72,21 @@ export default function FileUploader({ onFileSelect, selectedFile, isProcessing,
               <Upload className="w-10 h-10 text-white" />
             </div>
 
-            <h3 className="text-2xl font-bold text-white mb-2">Upload your document</h3>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              Upload your document
+            </h3>
             <p className="text-gray-400 mb-6">Drag & drop or click to browse</p>
 
             <div className="flex flex-wrap justify-center gap-3 text-xs text-gray-500 uppercase tracking-wider">
-              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">PDF</span>
-              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">DOCX</span>
-              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">PPTX</span>
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">
+                PDF
+              </span>
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">
+                DOCX
+              </span>
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/5">
+                PPTX
+              </span>
             </div>
           </motion.div>
         ) : (
@@ -88,7 +102,10 @@ export default function FileUploader({ onFileSelect, selectedFile, isProcessing,
                   <FileText className="w-7 h-7 text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white truncate max-w-[180px] sm:max-w-[250px] md:max-w-[200px]" title={selectedFile.name}>
+                  <h3
+                    className="text-lg font-semibold text-white truncate max-w-[180px] sm:max-w-[250px] md:max-w-[200px]"
+                    title={selectedFile.name}
+                  >
                     {selectedFile.name}
                   </h3>
                   <p className="text-sm text-gray-400">
@@ -118,7 +135,7 @@ export default function FileUploader({ onFileSelect, selectedFile, isProcessing,
                     Processing...
                   </span>
                 ) : (
-                  "Generate Mind Map"
+                  'Generate Mind Map'
                 )}
               </Button>
             </div>
