@@ -1,5 +1,5 @@
 // Basic parser: reads text for .txt and attempts for others.
-// For PDF/DOCX/PPTX, you’d typically use libraries (pdfjs-dist, mammoth, pptx-parser)
+// For PDF/DOCX/PPTX, you’d typically use libraries (pdfjs-dist, mammoth, JSZip)
 // which add size and complexity; here we keep it lightweight.
 
 export async function parseFile(file) {

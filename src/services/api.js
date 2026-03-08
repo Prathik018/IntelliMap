@@ -18,7 +18,7 @@ export async function processFile(file) {
     throw new Error('Could not extract meaningful text from file');
   }
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
   const prompt = `
 You are an assistant that generates structured mind map data.
@@ -103,28 +103,7 @@ async function extractText(file) {
           });
           resolve(value);
         } else if (ext === 'pptx') {
-          const zip = await JSZip.loadAsync(reader.result);
-          let text = '';
-          const slideFiles = Object.keys(zip.files).filter((name) =>
-            name.match(/ppt\/slides\/slide\d+\.xml/)
-          );
-
-          for (const filename of slideFiles) {
-            const xml = await zip.files[filename].async('string');
-            const parsed = await parseStringPromise(xml);
-            const shapes =
-              parsed['p:sld']['p:cSld'][0]['p:spTree'][0]['p:sp'] || [];
-
-            shapes.forEach((shape) => {
-              const paras = shape['p:txBody']?.[0]['a:p'] || [];
-              paras.forEach((p) => {
-                const runs = p['a:r'] || [];
-                runs.forEach((r) => {
-                  if (r['a:t']) text += r['a:t'][0] + ' ';
-                });
-              });
-            });
-          }
+          const text = await extractPptxText(reader.result);
           resolve(text);
         } else if (ext === 'ppt') {
           reject(
@@ -150,4 +129,78 @@ async function extractText(file) {
       reader.readAsText(file);
     }
   });
+}
+
+/**
+ * Extracts text content from a PPTX file using pptx2json.
+ * @param {ArrayBuffer} arrayBuffer The PPTX file content.
+ * @returns {Promise<string>} The combined text content of all slides.
+ */
+async function extractPptxText(arrayBuffer) {
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  let fullText = '';
+
+  const slideFiles = Object.keys(zip.files).filter((name) =>
+    name.match(/ppt\/slides\/slide\d+\.xml/)
+  );
+
+  // Sort slides for consistent text flow (e.g., slide1.xml, slide2.xml, ...)
+  slideFiles.sort((a, b) => {
+    const numA = parseInt(a.match(/slide(\d+)/)?.[1] || 0);
+    const numB = parseInt(b.match(/slide(\d+)/)?.[1] || 0);
+    return numA - numB;
+  });
+
+  for (const filename of slideFiles) {
+    try {
+      const xml = await zip.files[filename].async('string');
+      const parsed = await parseStringPromise(xml);
+
+      // Navigate to the slide content tree
+      const sld = parsed?.['p:sld'];
+      const cSld = sld?.['p:cSld']?.[0];
+      const spTree = cSld?.['p:spTree']?.[0];
+
+      // Regular shapes (p:sp)
+      const shapes = spTree?.['p:sp'] || [];
+      // Graphic frames like tables (p:graphicFrame)
+      const graphicFrames = spTree?.['p:graphicFrame'] || [];
+
+      // Extract from regular shapes
+      shapes.forEach((shape) => {
+        const paras = shape['p:txBody']?.[0]?.['a:p'] || [];
+        paras.forEach((p) => {
+          const runs = p['a:r'] || [];
+          runs.forEach((r) => {
+            if (r['a:t']) fullText += r['a:t'][0] + ' ';
+          });
+        });
+      });
+
+      // Extract from tables inside graphic frames
+      graphicFrames.forEach((frame) => {
+        const table =
+          frame['a:graphic']?.[0]?.['a:graphicData']?.[0]?.['a:tbl']?.[0];
+        if (table) {
+          const rows = table['a:tr'] || [];
+          rows.forEach((row) => {
+            const cells = row['a:tc'] || [];
+            cells.forEach((cell) => {
+              const paras = cell['a:txBody']?.[0]?.['a:p'] || [];
+              paras.forEach((p) => {
+                const runs = p['a:r'] || [];
+                runs.forEach((r) => {
+                  if (r['a:t']) fullText += r['a:t'][0] + ' ';
+                });
+              });
+            });
+          });
+        }
+      });
+    } catch (err) {
+      console.warn(`Failed to parse slide ${filename}:`, err);
+    }
+  }
+
+  return fullText.trim();
 }
