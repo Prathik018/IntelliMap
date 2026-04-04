@@ -1,84 +1,91 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import ReactFlow, {
   Background,
   applyNodeChanges,
   applyEdgeChanges,
+  useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 export default function MindmapTree({ data, onNodeClick }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState([]);
-  const [selectedSummary, setSelectedSummary] = useState('');
+  const { fitView } = useReactFlow();
 
   useEffect(() => {
     if (data) {
       const { nodes: newNodes, edges: newEdges } = buildRadialMindmap(data);
       setNodes(newNodes);
       setEdges(newEdges);
+      setTimeout(() => fitView({ duration: 800, padding: 0.2 }), 200);
     }
-  }, [data]);
+  }, [data, fitView]);
 
-  //  Handlers for dragging & updates
-  const onNodesChange = (changes) =>
-    setNodes((nds) => applyNodeChanges(changes, nds));
-  const onEdgesChange = (changes) =>
-    setEdges((eds) => applyEdgeChanges(changes, eds));
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    []
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    []
+  );
 
-  //  Handle node click
   const handleNodeClick = (event, node) => {
-    const summary =
-      node.data.summary || 'No summary available for this section.';
-    setSelectedSummary(summary);
     if (onNodeClick) {
-      onNodeClick(summary);
+      onNodeClick({
+        label: node.data.label_text,
+        summary: node.data.summary || 'No summary available for this section.',
+      });
     }
   };
 
   return (
-    <>
-      {/* Responsive wrapper for all screen sizes */}
-      <div className="w-full min-h-[60vh] h-[75vh] lg:h-[85vh] flex-grow overflow-auto">
-        <ReactFlow
-          nodes={nodes.map((n) => ({ ...n, selectable: true }))}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={handleNodeClick}
-          fitView
-          nodesDraggable
-          nodesConnectable={false}
-          edgesUpdatable={false}
-          zoomOnScroll
-          panOnDrag
-        >
-          <Background color="#f3f4f6" gap={28} />
-        </ReactFlow>
-      </div>
-    </>
+    <div className="w-full h-full relative group">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onNodeClick={handleNodeClick}
+        fitView
+        nodesDraggable
+        nodesConnectable={false}
+        edgesUpdatable={false}
+        zoomOnScroll
+        panOnDrag
+        className="bg-[#fdfdfd]"
+      >
+        <Background color="#f3f4f6" gap={24} size={1} />
+      </ReactFlow>
+    </div>
   );
 }
 
 function buildRadialMindmap(data) {
   const nodes = [];
   const edges = [];
-
-  const radiusStep = 260;
-  const minAngle = 0.15;
+  const radiusStep = 320;
 
   const rootId = 'root';
   nodes.push({
     id: rootId,
-    data: { label: data.name, summary: data.summary || '' },
+    data: {
+      label: data.name,
+      label_text: data.name,
+      summary: data.summary || '',
+    },
     position: { x: 0, y: 0 },
     style: {
-      background: '#2563eb',
+      background: '#000',
       color: '#fff',
-      borderRadius: '16px',
-      padding: '12px 20px',
-      fontWeight: 'bold',
-      fontSize: '18px',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      borderRadius: '24px',
+      padding: '18px 40px', // Increased size
+      fontWeight: '700',
+      fontSize: '17px', // Increased size
+      border: 'none',
+      boxShadow: '0 15px 30px -10px rgba(0,0,0,0.3)',
+      textAlign: 'center',
+      minWidth: 'fit-content',
     },
   });
 
@@ -86,27 +93,48 @@ function buildRadialMindmap(data) {
     if (!children || children.length === 0) return;
 
     const totalAngle = endAngle - startAngle;
-    const availableAngle = totalAngle - minAngle * (children.length - 1);
-    const angleStep = availableAngle / children.length;
+    const angleStep = totalAngle / children.length;
 
     let currentAngle = startAngle;
     children.forEach((child, i) => {
       const angle = currentAngle + angleStep / 2;
-      const x = Math.cos(angle) * radiusStep * level;
-      const y = Math.sin(angle) * radiusStep * level;
+
+      // Gradually increase radius step per level to give more arc space to leaf nodes
+      const currentRadius = radiusStep * level * Math.pow(1.1, level - 1);
+      const x = Math.cos(angle) * currentRadius;
+      const y = Math.sin(angle) * currentRadius;
 
       const nodeId = `${parentId}-${i}`;
+      const color = pickColor(level);
+
       nodes.push({
         id: nodeId,
-        data: { label: child.name, summary: child.summary || '' },
+        data: {
+          label: (
+            <div className="flex items-center gap-4 whitespace-nowrap">
+              <div
+                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-sm"
+                style={{ backgroundColor: color }}
+              />
+              <span>{child.name}</span>
+            </div>
+          ),
+          label_text: child.name,
+          summary: child.summary || '',
+          level: level,
+        },
         position: { x, y },
         style: {
           background: '#fff',
-          border: `2px solid ${pickColor(level)}`,
-          borderRadius: '12px',
-          padding: '8px 14px',
-          fontSize: '14px',
-          fontWeight: 500,
+          border: '1px solid #f0f0f0',
+          borderRadius: '16px',
+          padding: '14px 28px', // Increased size
+          fontSize: '15px', // Increased size
+          fontWeight: '700',
+          color: '#111',
+          boxShadow: '0 6px 15px -3px rgba(0,0,0,0.06)',
+          textAlign: 'center',
+          minWidth: 'fit-content',
         },
       });
 
@@ -115,7 +143,12 @@ function buildRadialMindmap(data) {
         source: parentId,
         target: nodeId,
         type: 'smoothstep',
-        style: { stroke: pickColor(level), strokeWidth: 2 },
+        animated: true,
+        style: {
+          stroke: '#e2e8f0',
+          strokeWidth: 2,
+          strokeDasharray: '5,5',
+        },
       });
 
       if (child.children) {
@@ -127,8 +160,7 @@ function buildRadialMindmap(data) {
           currentAngle + angleStep
         );
       }
-
-      currentAngle += angleStep + minAngle;
+      currentAngle += angleStep;
     });
   }
 
@@ -141,12 +173,11 @@ function buildRadialMindmap(data) {
 
 function pickColor(level) {
   const colors = [
-    '#6366f1', // indigo
-    '#f59e0b', // amber
-    '#10b981', // emerald
-    '#ef4444', // red
-    '#3b82f6', // blue
-    '#8b5cf6', // violet
+    '#93c5fd', // blue
+    '#34d399', // emerald
+    '#facc15', // yellow
+    '#f87171', // red
+    '#a78bfa', // violet
   ];
   return colors[(level - 1) % colors.length];
 }

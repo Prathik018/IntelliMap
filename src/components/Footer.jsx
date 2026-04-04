@@ -1,55 +1,34 @@
-import { Github, Mail, Twitter, Instagram } from 'lucide-react';
+const XIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+  </svg>
+);
 
-export default function Footer() {
+export function Footer() {
   return (
-    <footer className="relative z-10 w-full border-t border-white/10 bg-[#0a0a0a] pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <h3 className="text-xl font-bold text-white mb-2">IntelliMap</h3>
-            <p className="text-gray-400 text-sm">
-              Transforming knowledge into clarity.
-            </p>
+    <footer className="border-t border-gray-100 bg-white">
+      <div className="max-w-6xl mx-auto px-4">
+        <div className="flex flex-col items-center justify-between py-6 sm:h-16 sm:flex-row">
+          <div className="text-center text-sm text-gray-500 sm:w-1/3 sm:text-left font-medium uppercase tracking-[0.1em]">
+            © {new Date().getFullYear()} Intellimap
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex justify-center sm:justify-end sm:w-1/3">
             <a
-              href="https://github.com/Prathik018"
+              href="https://x.com/Prathik__Pai"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="mt-4 flex items-center gap-1.5 text-sm text-gray-500 transition-colors hover:text-black sm:mt-0 font-medium"
             >
-              <Github className="w-5 h-5" />
-            </a>
-            <a
-              href="mailto:prathikvpai@gmail.com"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <Mail className="w-5 h-5" />
-            </a>
-            <a
-              href="https://twitter.com/Prathik__Pai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a
-              href="https://www.instagram.com/prathikk.pai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <Instagram className="w-5 h-5" />
+              <XIcon className="h-3.5 w-3.5" />
+              Designed and Developed by{' '}
+              <span className="font-bold text-gray-900">Prathik Pai</span>
             </a>
           </div>
-        </div>
-
-        <div className="mt-16 pt-8 border-t border-white/5 text-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} IntelliMap. All rights reserved.</p>
         </div>
       </div>
     </footer>
   );
 }
+
+export default Footer;

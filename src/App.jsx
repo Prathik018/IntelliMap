@@ -1,19 +1,14 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import Dashboard from '@/components/Dashboard';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-import { useEffect } from 'react';
 
 export default function App() {
-  useEffect(() => {
-    AOS.init({ duration: 800, once: true });
-  }, []);
+  const location = useLocation();
+
   return (
     <div className="relative flex flex-col min-h-screen">
-      {/* Content */}
       <Navbar className="relative z-10" />
       <main className="flex-grow relative z-10">
         <Routes>
