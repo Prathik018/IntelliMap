@@ -470,7 +470,7 @@ export default function Dashboard() {
                           size="sm"
                           className="flex-1 h-9 rounded-full bg-black text-white text-[10px] font-bold hover:bg-gray-800 transition-all shadow-sm"
                         >
-                          View Map
+                          View Mind map
                         </Button>
                         <Button
                           variant="outline"
@@ -480,11 +480,6 @@ export default function Dashboard() {
                         >
                           <Download className="w-3.5 h-3.5" />
                         </Button>
-                      </div>
-
-                      {/* Floating Indicator */}
-                      <div className="hidden sm:flex absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-4 border-white rounded-full items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <div className="w-1.5 h-1.5 bg-blue-300 rounded-full" />
                       </div>
                     </motion.div>
                   ))}

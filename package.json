@@ -5,7 +5,10 @@
   "type": "module",
   "overrides": {
     "jszip": "^3.10.1",
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.31",
+    "pdfjs-dist": "3.11.174",
+    "tar": "^6.2.1",
+    "@mapbox/node-pre-gyp": "^1.0.11"
   },
   "scripts": {
     "dev": "vite",
@@ -26,15 +29,13 @@
     "aos": "^3.0.0-beta.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "docx-preview": "^0.3.6",
     "framer-motion": "^12.23.12",
     "html-to-image": "^1.11.13",
     "jszip": "^3.10.1",
     "lucide-react": "^0.539.0",
     "mammoth": "^1.10.0",
     "ogl": "^1.0.11",
-    "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.4.54",
+    "pdfjs-dist": "3.11.174",
     "postcss": "^8.4.31",
     "radix-ui": "^1.4.3",
     "react": "^19.1.1",
