@@ -371,9 +371,7 @@ export default function Dashboard() {
 
   const handleDownloadHistoryItem = async (e, item) => {
     e.stopPropagation();
-    // 1. Load the item into workspace
     handleViewHistoryItem(item);
-    // 2. Wait for the workspace to mount and render
     setTimeout(async () => {
       await handleDownload();
     }, 800);
