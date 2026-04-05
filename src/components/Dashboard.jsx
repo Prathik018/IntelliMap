@@ -400,12 +400,12 @@ export default function Dashboard() {
               exit={{ opacity: 0, y: -10 }}
               className="flex-1 flex flex-col p-8 md:p-16 max-w-7xl mx-auto w-full overflow-y-auto"
             >
-              <div className="flex items-center justify-between mb-16 px-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-0 mb-8 sm:mb-16 px-4">
                 <div>
-                  <h1 className="text-4xl font-bold tracking-tight mb-2">
+                  <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
                     Welcome back, {user?.firstName}
                   </h1>
-                  <p className="text-gray-400">
+                  <p className="text-gray-400 text-sm sm:text-base">
                     Your generated mind maps and visualizations.
                   </p>
                 </div>
@@ -429,7 +429,7 @@ export default function Dashboard() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-12 pl-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-12 pl-0 sm:pl-12 px-4 sm:px-0">
                   {history.map((item) => (
                     <motion.div
                       layout
@@ -483,7 +483,7 @@ export default function Dashboard() {
                       </div>
 
                       {/* Floating Indicator */}
-                      <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-4 border-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <div className="hidden sm:flex absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-4 border-white rounded-full items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                         <div className="w-1.5 h-1.5 bg-blue-300 rounded-full" />
                       </div>
                     </motion.div>
@@ -497,21 +497,23 @@ export default function Dashboard() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
-              className="flex-1 flex flex-col items-center justify-center p-6"
+              className="flex-1 flex flex-col items-center justify-start mt-2 md:mt-0 md:justify-center p-6"
             >
               <div className="max-w-4xl w-full text-center relative">
-                <Button
-                  variant="ghost"
-                  onClick={() => setShowUploader(false)}
-                  className="absolute -top-20 md:-left-20 rounded-xl hover:bg-gray-100"
-                >
-                  <ArrowLeft className="w-5 h-5 mr-2" /> Back
-                </Button>
+                <div className="flex justify-start mb-6 sm:mb-0 sm:absolute sm:-top-20 sm:-left-20">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setShowUploader(false)}
+                    className="-ml-4 sm:ml-0 rounded-xl hover:bg-gray-100"
+                  >
+                    <ArrowLeft className="w-5 h-5 mr-2" /> Back
+                  </Button>
+                </div>
                 <motion.h1
                   initial={{ y: 10, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="text-4xl font-bold mb-3 tracking-tight"
+                  className="text-3xl sm:text-4xl font-bold mb-2 sm:mb-3 tracking-tight"
                 >
                   New Mapping
                 </motion.h1>

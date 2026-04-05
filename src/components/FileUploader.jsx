@@ -35,7 +35,7 @@ export default function FileUploader({ onFileSelect, isProcessing }) {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`relative border-2 border-dashed rounded-[32px] md:rounded-[40px] border-gray-300 p-10 md:p-20 text-center transition-all duration-300 cursor-pointer group
+        className={`relative border-2 border-dashed rounded-[24px] md:rounded-[40px] border-gray-300 p-6 sm:p-10 md:p-20 text-center transition-all duration-300 cursor-pointer group
           ${
             isDragging
               ? 'border-blue-200 bg-blue-50/50'
@@ -75,11 +75,11 @@ export default function FileUploader({ onFileSelect, isProcessing }) {
               </span>
             </p>
 
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-4 sm:mt-0">
               {['PDF', 'DOCX', 'PPTX'].map((ext) => (
                 <div
                   key={ext}
-                  className="px-5 py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-[10px] font-bold text-gray-400"
+                  className="px-4 py-1.5 sm:px-5 sm:py-1.5 rounded-lg bg-gray-50 border border-gray-100 text-[10px] font-bold text-gray-400"
                 >
                   {ext}
                 </div>
