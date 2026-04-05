@@ -16,7 +16,6 @@ IntelliMap is a Web App, AI-driven platform designed to help users quickly visua
 
 **Backend**
 
-- Node.js / API routes
 - Custom file processing logic (`processFile` service)
 
 **Authentication**
@@ -31,6 +30,8 @@ IntelliMap is a Web App, AI-driven platform designed to help users quickly visua
 
 - html-to-image (for downloading mind maps)
 - Vite (development tooling)
+- NPM (for package management)
+- Prettier (for code formatting)
 
 ---
 

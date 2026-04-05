@@ -135,13 +135,11 @@ body {
   font-family: 'Geist Variable', 'Outfit', sans-serif;
   background-color: white;
   color: black;
-  overscroll-behavior: none;
 }
 
 html {
   scroll-behavior: smooth;
   background-color: white;
-  overscroll-behavior: none;
 }
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {

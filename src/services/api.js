@@ -3,22 +3,25 @@ import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min?url';
 import mammoth from 'mammoth';
 import JSZip from 'jszip';
-import { parseStringPromise } from 'xml2js';
 
 // configure pdf worker for Vite
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
-// init Gemini
+// Initialize the  Gemini
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 export async function processFile(file) {
   const text = await extractText(file);
 
   if (!text || text.length < 10) {
-    throw new Error('Could not extract meaningful text from file');
+    throw new Error(
+      'Could not extract enough text from the file. Please ensure it is not an image-only document or a scanned file without OCR.'
+    );
   }
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' });
+  // Define the Google Gemini model
+  const modelName = 'gemini-3-flash-preview';
+  const model = genAI.getGenerativeModel({ model: modelName });
 
   const prompt = `
 You are an assistant that generates structured mind map data.
@@ -46,30 +49,38 @@ Text:
 ${text}
 `;
 
-  // New correct format for v1beta API
-  const result = await model.generateContent({
-    contents: [
-      {
-        role: 'user',
-        parts: [{ text: prompt }],
-      },
-    ],
-  });
-
-  const output = result.response.text().trim();
-
-  // Clean accidental code fences
-  const cleanOutput = output.replace(/```json|```/g, '').trim();
-
-  let parsed;
   try {
-    parsed = JSON.parse(cleanOutput);
-  } catch (err) {
-    console.error('Failed JSON:', cleanOutput);
-    throw new Error('Gemini returned invalid JSON: ' + err.message);
-  }
+    const result = await model.generateContent({
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: prompt }],
+        },
+      ],
+    });
 
-  return parsed;
+    const output = result.response.text().trim();
+
+    // Clean accidental code fences
+    const cleanOutput = output.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleanOutput);
+    } catch (err) {
+      console.error('Failed JSON:', cleanOutput);
+      throw new Error('Gemini returned invalid JSON: ' + err.message);
+    }
+
+    return parsed;
+  } catch (err) {
+    if (err.message.includes('model') || err.message.includes('not found')) {
+      throw new Error(
+        `Gemini API Error: The selected model (${modelName}) might not be available. Please check your API key and region.`
+      );
+    }
+    throw err;
+  }
 }
 
 // file extraction
@@ -98,10 +109,12 @@ async function extractText(file) {
           });
           resolve(value);
         } else if (ext === 'doc') {
-          const { value } = await mammoth.extractRawText({
-            arrayBuffer: reader.result,
-          });
-          resolve(value);
+          // mammoth doesn't support old binary .doc format reliably
+          reject(
+            new Error(
+              'Old .doc format not supported. Please convert to .docx for better results.'
+            )
+          );
         } else if (ext === 'pptx') {
           const text = await extractPptxText(reader.result);
           resolve(text);
@@ -113,7 +126,9 @@ async function extractText(file) {
           );
         } else {
           reject(
-            new Error('Unsupported file type. Use PDF, TXT, DOC, DOCX, or PPTX')
+            new Error(
+              `Unsupported file type: .${ext}. Use PDF, TXT, DOCX, or PPTX`
+            )
           );
         }
       } catch (err) {
@@ -123,7 +138,8 @@ async function extractText(file) {
 
     reader.onerror = reject;
 
-    if (['pdf', 'docx', 'doc', 'pptx'].includes(ext)) {
+    // Correctly decide which read method to use
+    if (['pdf', 'docx', 'doc', 'pptx', 'ppt'].includes(ext)) {
       reader.readAsArrayBuffer(file);
     } else {
       reader.readAsText(file);
@@ -132,75 +148,74 @@ async function extractText(file) {
 }
 
 /**
- * Extracts text content from a PPTX file using pptx2json.
+ * Robustly extracts text content from a PPTX file.
  * @param {ArrayBuffer} arrayBuffer The PPTX file content.
  * @returns {Promise<string>} The combined text content of all slides.
  */
 async function extractPptxText(arrayBuffer) {
-  const zip = await JSZip.loadAsync(arrayBuffer);
-  let fullText = '';
+  try {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    let fullText = '';
 
-  const slideFiles = Object.keys(zip.files).filter((name) =>
-    name.match(/ppt\/slides\/slide\d+\.xml/)
-  );
+    // Find all slide XML files (case-insensitive)
+    const slideFiles = Object.keys(zip.files).filter((name) =>
+      /ppt\/slides\/slide\d+\.xml/i.test(name)
+    );
 
-  // Sort slides for consistent text flow (e.g., slide1.xml, slide2.xml, ...)
-  slideFiles.sort((a, b) => {
-    const numA = parseInt(a.match(/slide(\d+)/)?.[1] || 0);
-    const numB = parseInt(b.match(/slide(\d+)/)?.[1] || 0);
-    return numA - numB;
-  });
+    if (slideFiles.length === 0) {
+      // Fallback: search for any slide-like XML files more aggressively
+      const possibleSlides = Object.keys(zip.files).filter((name) =>
+        /slides\/slide.*\.xml/i.test(name)
+      );
+      slideFiles.push(...possibleSlides);
+    }
 
-  for (const filename of slideFiles) {
-    try {
-      const xml = await zip.files[filename].async('string');
-      const parsed = await parseStringPromise(xml);
+    if (slideFiles.length === 0) {
+      throw new Error('No slides found in the PowerPoint file.');
+    }
 
-      // Navigate to the slide content tree
-      const sld = parsed?.['p:sld'];
-      const cSld = sld?.['p:cSld']?.[0];
-      const spTree = cSld?.['p:spTree']?.[0];
+    // Sort slides
+    slideFiles.sort((a, b) => {
+      const numA = parseInt(a.match(/slide(\d+)/i)?.[1] || 0);
+      const numB = parseInt(b.match(/slide(\d+)/i)?.[1] || 0);
+      return numA - numB;
+    });
 
-      // Regular shapes (p:sp)
-      const shapes = spTree?.['p:sp'] || [];
-      // Graphic frames like tables (p:graphicFrame)
-      const graphicFrames = spTree?.['p:graphicFrame'] || [];
+    for (const filename of slideFiles) {
+      try {
+        const xml = await zip.files[filename].async('string');
 
-      // Extract from regular shapes
-      shapes.forEach((shape) => {
-        const paras = shape['p:txBody']?.[0]?.['a:p'] || [];
-        paras.forEach((p) => {
-          const runs = p['a:r'] || [];
-          runs.forEach((r) => {
-            if (r['a:t']) fullText += r['a:t'][0] + ' ';
-          });
-        });
-      });
-
-      // Extract from tables inside graphic frames
-      graphicFrames.forEach((frame) => {
-        const table =
-          frame['a:graphic']?.[0]?.['a:graphicData']?.[0]?.['a:tbl']?.[0];
-        if (table) {
-          const rows = table['a:tr'] || [];
-          rows.forEach((row) => {
-            const cells = row['a:tc'] || [];
-            cells.forEach((cell) => {
-              const paras = cell['a:txBody']?.[0]?.['a:p'] || [];
-              paras.forEach((p) => {
-                const runs = p['a:r'] || [];
-                runs.forEach((r) => {
-                  if (r['a:t']) fullText += r['a:t'][0] + ' ';
-                });
-              });
-            });
+        /**
+         * Robust Regex-based extraction.
+         * We look for content between <a:t>...</a:t> tags.
+         * This is much more reliable than manual XML traversal as it catches
+         * text in all possible elements (paragraphs, tables, charts, etc.)
+         */
+        const textMatches = xml.match(/<a:t.*?>(.*?)<\/a:t>/g);
+        if (textMatches) {
+          textMatches.forEach((match) => {
+            const content = match.replace(/<a:t.*?>|<\/a:t>/g, '');
+            // Decode basic XML entities
+            const decoded = content
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .replace(/&apos;/g, "'");
+            fullText += decoded + ' ';
           });
         }
-      });
-    } catch (err) {
-      console.warn(`Failed to parse slide ${filename}:`, err);
+      } catch (err) {
+        console.warn(`Failed to extract text from slide ${filename}:`, err);
+      }
     }
-  }
 
-  return fullText.trim();
+    return fullText.trim();
+  } catch (err) {
+    if (err.message.includes('No slides found')) throw err;
+    console.error('JSZip error:', err);
+    throw new Error(
+      'Failed to open presentation file. Ensure it is a valid .pptx file.'
+    );
+  }
 }

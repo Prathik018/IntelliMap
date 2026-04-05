@@ -79,9 +79,9 @@ function buildRadialMindmap(data) {
       background: '#000',
       color: '#fff',
       borderRadius: '24px',
-      padding: '18px 40px', // Increased size
+      padding: '18px 40px',
       fontWeight: '700',
-      fontSize: '17px', // Increased size
+      fontSize: '17px',
       border: 'none',
       boxShadow: '0 15px 30px -10px rgba(0,0,0,0.3)',
       textAlign: 'center',
@@ -128,8 +128,8 @@ function buildRadialMindmap(data) {
           background: '#fff',
           border: '1px solid #f0f0f0',
           borderRadius: '16px',
-          padding: '14px 28px', // Increased size
-          fontSize: '15px', // Increased size
+          padding: '14px 28px',
+          fontSize: '15px',
           fontWeight: '700',
           color: '#111',
           boxShadow: '0 6px 15px -3px rgba(0,0,0,0.06)',

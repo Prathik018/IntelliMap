@@ -1,5 +1,5 @@
-import { useUser, UserButton } from '@clerk/clerk-react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import FileUploader from '@/components/FileUploader';
 import MindmapTree from '@/components/MindMap';
@@ -10,15 +10,23 @@ import {
   Download,
   ChevronRight,
   FileText,
-  Clock,
   ArrowRight,
   Plus,
   Minus,
   RotateCcw,
+  Trash2,
+  ArrowLeft,
+  Bookmark,
+  Check,
 } from 'lucide-react';
 import * as htmlToImage from 'html-to-image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ReactFlowProvider, useReactFlow } from 'reactflow';
+import {
+  getHistory,
+  saveMapToHistory,
+  deleteMapFromHistory,
+} from '../lib/storage';
 
 function MappingWorkspace({
   file,
@@ -26,15 +34,26 @@ function MappingWorkspace({
   onNodeClick,
   handleDownload,
   handleRegenerate,
+  handleSave,
+  handleBack,
   isProcessing,
 }) {
   const [selectedNode, setSelectedNode] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
   const handleLocalNodeClick = (node) => {
     setSelectedNode(node);
     if (onNodeClick) onNodeClick(node);
+  };
+
+  const onSaveClick = async () => {
+    const success = await handleSave();
+    if (success) {
+      setIsSaved(true);
+      setTimeout(() => setIsSaved(false), 2000);
+    }
   };
 
   return (
@@ -45,20 +64,35 @@ function MappingWorkspace({
       className="flex-1 flex flex-col min-h-0"
     >
       <div className="h-16 border-b border-gray-50 bg-white/50 backdrop-blur-sm flex items-center justify-between px-4 md:px-8 shrink-0">
-        <div className="flex flex-col min-w-0">
-          <h2 className="font-bold text-sm text-gray-900 truncate pr-2">
-            {file?.name || 'Untitled Document'}
-          </h2>
-          <div className="flex items-center gap-2 text-[10px] text-gray-400 font-medium whitespace-nowrap">
-            <Clock className="w-3 h-3" /> Mapped just now
+        <div className="flex items-center gap-4 min-w-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleBack}
+            className="rounded-xl hover:bg-gray-100 shrink-0"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <div className="w-px h-6 bg-gray-100" />
+          <div className="flex flex-col min-w-0">
+            <h2 className="font-bold text-sm text-gray-900 truncate pr-2">
+              {file?.name || 'Untitled Document'}
+            </h2>
           </div>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          {/* Regenerate Button */}
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleRegenerate(file)}
+            onClick={() => {
+              if (file instanceof File) {
+                handleRegenerate(file);
+              } else {
+                handleRegenerate(null);
+              }
+            }}
             disabled={isProcessing}
             className="rounded-lg h-9 md:h-10 px-2 md:px-4 text-[10px] md:text-xs font-bold border-gray-200 hover:bg-gray-50 transition-colors"
           >
@@ -72,6 +106,28 @@ function MappingWorkspace({
               {isProcessing ? 'Wait...' : 'Again'}
             </span>
           </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onSaveClick}
+            disabled={isSaved}
+            className={`rounded-lg h-9 md:h-10 px-2 md:px-4 text-[10px] md:text-xs font-bold transition-all duration-300 ${
+              isSaved
+                ? 'bg-green-50 border-green-200 text-green-600'
+                : 'border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            {isSaved ? (
+              <Check className="w-3.5 h-3.5 md:mr-2" />
+            ) : (
+              <Bookmark className="w-3.5 h-3.5 md:mr-2" />
+            )}
+            <span className="hidden sm:inline">
+              {isSaved ? 'Saved to Library' : 'Save Map'}
+            </span>
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
@@ -225,24 +281,75 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [mindmapData, setMindmapData] = useState(null);
+  const [summaryData, setSummaryData] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [showUploader, setShowUploader] = useState(false);
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
       navigate('/sign-in');
     }
-  }, [isSignedIn, isLoaded, navigate]);
+    if (isLoaded && isSignedIn && user?.id) {
+      setHistory(getHistory(user.id));
+    }
+  }, [isSignedIn, isLoaded, navigate, user?.id]);
 
   const handleProcess = async (selectedFile) => {
+    if (!selectedFile) {
+      setMindmapData(null);
+      setSummaryData(null);
+      setShowUploader(true);
+      return;
+    }
     setIsProcessing(true);
     setFile(selectedFile);
     try {
       const result = await processFile(selectedFile);
       setMindmapData(result.mindmap);
+      setSummaryData(result.summary);
+      setShowUploader(false);
     } catch (err) {
       alert(err.message);
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleSave = async () => {
+    if (user?.id && mindmapData && file) {
+      const isAlreadyInHistory = history.some(
+        (item) =>
+          item.fileName === file.name &&
+          JSON.stringify(item.mindmap) === JSON.stringify(mindmapData)
+      );
+
+      if (isAlreadyInHistory) {
+        return true; // Already saved
+      }
+
+      const newEntry = saveMapToHistory(user.id, {
+        fileName: file.name,
+        mindmap: mindmapData,
+        summary: summaryData,
+      });
+      setHistory((prev) => [newEntry, ...prev]);
+      return true;
+    }
+    return false;
+  };
+
+  const handleViewHistoryItem = (item) => {
+    setFile({ name: item.fileName });
+    setMindmapData(item.mindmap);
+    setSummaryData(item.summary);
+    setShowUploader(false);
+  };
+
+  const handleDeleteHistoryItem = (id) => {
+    if (user?.id && confirm('Are you sure you want to delete this map?')) {
+      const updated = deleteMapFromHistory(user.id, id);
+      setHistory(updated);
     }
   };
 
@@ -262,6 +369,16 @@ export default function Dashboard() {
     }
   };
 
+  const handleDownloadHistoryItem = async (e, item) => {
+    e.stopPropagation();
+    // 1. Load the item into workspace
+    handleViewHistoryItem(item);
+    // 2. Wait for the workspace to mount and render
+    setTimeout(async () => {
+      await handleDownload();
+    }, 800);
+  };
+
   if (!isLoaded)
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
@@ -275,7 +392,106 @@ export default function Dashboard() {
     <div className="min-h-screen w-full bg-[#fdfdfd] text-black">
       <main className="flex flex-col h-[calc(100vh-64px)] overflow-hidden min-h-0">
         <AnimatePresence mode="wait">
-          {!mindmapData ? (
+          {!mindmapData && !showUploader ? (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="flex-1 flex flex-col p-8 md:p-16 max-w-7xl mx-auto w-full overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-16 px-4">
+                <div>
+                  <h1 className="text-4xl font-bold tracking-tight mb-2">
+                    Welcome back, {user?.firstName}
+                  </h1>
+                  <p className="text-gray-400">
+                    Your generated mind maps and visualizations.
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowUploader(true)}
+                  className="rounded-full bg-black text-white px-8 h-12 hover:bg-gray-800 transition-all font-medium whitespace-nowrap"
+                >
+                  <Plus className="w-5 h-5 mr-2" /> New Mapping
+                </Button>
+              </div>
+
+              {history.length === 0 ? (
+                <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-100 rounded-[40px] p-20 text-center">
+                  <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-6">
+                    <FileText className="w-10 h-10 text-gray-200" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2">No maps found</h3>
+                  <p className="text-gray-400 mb-8 max-w-sm">
+                    Generate your first mind map by clicking the button above to
+                    upload a document.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-12 pl-12">
+                  {history.map((item) => (
+                    <motion.div
+                      layout
+                      key={item.id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      onClick={() => handleViewHistoryItem(item)}
+                      className="cursor-pointer bg-white border border-gray-100 rounded-2xl p-6 shadow-sm relative group hover:shadow-md hover:border-gray-200 transition-all duration-300 flex flex-col gap-4"
+                    >
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-bold truncate pr-16 block">
+                          {item.fileName}
+                        </span>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="inline-flex h-5 items-center justify-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-500">
+                            Summary
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteHistoryItem(item.id);
+                            }}
+                            className="h-6 w-6 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-400 leading-relaxed line-clamp-3 mb-2">
+                        {item.summary ||
+                          'This document has been mapped successfully. Click to explore the hierarchical node structure and detailed contextual insights.'}
+                      </p>
+
+                      <div className="mt-auto flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          className="flex-1 h-9 rounded-full bg-black text-white text-[10px] font-bold hover:bg-gray-800 transition-all shadow-sm"
+                        >
+                          View Map
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => handleDownloadHistoryItem(e, item)}
+                          className="h-9 px-3 rounded-full border-gray-100 hover:bg-gray-50 transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+
+                      {/* Floating Indicator */}
+                      <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-900 border-4 border-white rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <div className="w-1.5 h-1.5 bg-blue-300 rounded-full" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          ) : showUploader ? (
             <motion.div
               key="uploader"
               initial={{ opacity: 0, scale: 0.98 }}
@@ -283,7 +499,14 @@ export default function Dashboard() {
               exit={{ opacity: 0, scale: 1.02 }}
               className="flex-1 flex flex-col items-center justify-center p-6"
             >
-              <div className="max-w-4xl w-full text-center">
+              <div className="max-w-4xl w-full text-center relative">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowUploader(false)}
+                  className="absolute -top-20 md:-left-20 rounded-xl hover:bg-gray-100"
+                >
+                  <ArrowLeft className="w-5 h-5 mr-2" /> Back
+                </Button>
                 <motion.h1
                   initial={{ y: 10, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -318,6 +541,11 @@ export default function Dashboard() {
                 mindmapData={mindmapData}
                 handleDownload={handleDownload}
                 handleRegenerate={handleProcess}
+                handleSave={handleSave}
+                handleBack={() => {
+                  setMindmapData(null);
+                  setSummaryData(null);
+                }}
                 isProcessing={isProcessing}
               />
             </ReactFlowProvider>

@@ -10,7 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useUser, SignInButton } from '@clerk/clerk-react';
 import { motion } from 'framer-motion';
-import { FileText, Target, Share2, ChevronRight } from 'lucide-react';
+import { FileText, Target, Share2, ChevronRight, Clock } from 'lucide-react';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -46,9 +46,16 @@ export default function Hero() {
     {
       icon: <Target className="w-5 h-5" />,
       title: 'Contextual Node Summaries',
-      desc: 'Clicking any node in the generated map reveals a concise, AI-generated summary of that specific section, allowing for rapid comprehension without reading full pages.',
+      desc: 'Clicking any node in the generated map reveals a concise, AI-generated summary of that specific section, allowing for rapid comprehension.',
       metric: 'Instant',
       metricLabel: 'Extraction time',
+    },
+    {
+      icon: <Clock className="w-5 h-5" />,
+      title: 'Local Persistence',
+      desc: 'Save your mind maps directly to your browser. Your library is persistent and private, isolated to your account using secure local storage.',
+      metric: 'Private',
+      metricLabel: 'Browser-native',
     },
     {
       icon: <Share2 className="w-5 h-5" />,
@@ -63,17 +70,22 @@ export default function Hero() {
     {
       num: '01',
       title: 'File Ingestion',
-      desc: 'Drag and drop your unstructured PDFs, Word docs, or presentations up to 100MB. Our engine performs deep structural extraction for analysis.',
+      desc: 'Drag and drop your unstructured documents up to 100MB. Our engine performs deep structural extraction for analysis.',
     },
     {
       num: '02',
       title: 'Intelligent Analysis',
-      desc: "Intellimap leverages Google Gemini to parse the document's logic, identifying hierarchical relationships and generating concise section-level takeaways.",
+      desc: "Intellimap leverages Google Gemini to parse the document's logic, identifying hierarchical relationships and generating takeaways.",
     },
     {
       num: '03',
       title: 'Interactive Mapping',
-      desc: 'Explore the resulting mind map on a dynamic canvas. Drill down into specific nodes to access contextual insights instantly without reading full pages.',
+      desc: 'Explore the resulting mind map on a dynamic canvas. Drill down into specific nodes to access contextual insights instantly.',
+    },
+    {
+      num: '04',
+      title: 'Library Archive',
+      desc: 'Save your mappings to your personal dashboard. Everything is stored locally in your browser for secure, permanent access.',
     },
   ];
 
@@ -81,6 +93,10 @@ export default function Hero() {
     {
       q: 'What AI technology powers the summary generation?',
       a: 'We utilize Google Gemini to perform deep semantic analysis and high-accuracy node summary generation, ensuring you get the most relevant context from every document segment.',
+    },
+    {
+      q: 'Where is my data stored?',
+      a: "IntelliMap uses your browser's local storage to persist your generated maps. This means your data stays on your device and is only accessible when you are logged in to your account on this specific browser.",
     },
     {
       q: 'How accurate is the structural extraction?',
@@ -282,7 +298,7 @@ export default function Hero() {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-6 md:mt-0 md:text-right">
+                  <div className="mt-6 md:mt-0 md:text-right shrink-0">
                     <div className="text-xl font-bold text-gray-900">
                       {cap.metric}
                     </div>
@@ -390,12 +406,12 @@ export default function Hero() {
               From static to structured.
             </motion.h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 bg-white border border-gray-200 rounded-[32px] overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 bg-white border border-gray-200 rounded-[32px] overflow-hidden">
               {processSteps.map((step, i) => (
                 <motion.div
                   key={i}
                   variants={fadeInUp}
-                  className="p-10 md:p-16 flex flex-col items-start border-b md:border-b-0 md:border-r border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors"
+                  className="p-10 md:p-12 flex flex-col items-start border-b lg:border-b-0 border-gray-100 last:border-0 md:border-r lg:border-r hover:bg-gray-50/50 transition-colors"
                 >
                   <span className="text-5xl font-bold text-blue-100 mb-8">
                     {step.num}
@@ -403,7 +419,9 @@ export default function Hero() {
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">
                     {step.title}
                   </h3>
-                  <p className="text-gray-500 leading-relaxed">{step.desc}</p>
+                  <p className="text-gray-500 leading-relaxed text-sm">
+                    {step.desc}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -439,7 +457,7 @@ export default function Hero() {
                   value={`item-${i}`}
                   className="border-b border-gray-100 py-4 last:border-0"
                 >
-                  <AccordionTrigger className="text-lg font-bold text-gray-900 hover:no-underline py-4">
+                  <AccordionTrigger className="text-lg font-bold text-gray-900 hover:no-underline py-4 text-left">
                     {faq.q}
                   </AccordionTrigger>
                   <AccordionContent className="text-gray-500 text-lg leading-relaxed pt-2 pb-6">
