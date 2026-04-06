@@ -10,7 +10,6 @@ IntelliMap is a Web App, AI-driven platform designed to help users quickly visua
 
 - React
 - Tailwind CSS
-- Reactbits
 - Shadcn UI / Custom Components
 - ReactFlow / MindmapTree for mind map visualization
 
@@ -34,36 +33,6 @@ IntelliMap is a Web App, AI-driven platform designed to help users quickly visua
 - Prettier (for code formatting)
 
 ---
-
-## Setup & Installation
-
-Follow these steps to run IntelliMap locally:
-
-1. **Clone the Repository:**
-
-```bash
-git clone https://github.com/yourusername/intellimap.git
-cd intellimap
-```
-
-2. **Install Node Module:**
-
-```bash
-npm i
-```
-
-3. **Create a .env File in the root directory and add the following:**
-
-```bash
-VITE_CLERK_FRONTEND_API=<your-clerk-frontend-api>
-VITE_GEMINI_API_KEY=<your-google-gemini-api-key>
-```
-
-4. **Start the Development Server:**
-
-```bash
-npm run dev
-```
 
 ## 🚀 About Me
 

@@ -39,12 +39,48 @@ function MappingWorkspace({
   isProcessing,
 }) {
   const [selectedNode, setSelectedNode] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 767px)').matches
+      : false
+  );
+  const [sidebarOpen, setSidebarOpen] = useState(() => !isSmallScreen);
   const [isSaved, setIsSaved] = useState(false);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+
+    const handleScreenChange = (event) => {
+      setIsSmallScreen(event.matches);
+    };
+
+    setIsSmallScreen(mediaQuery.matches);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleScreenChange);
+    } else {
+      mediaQuery.addListener(handleScreenChange);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleScreenChange);
+      } else {
+        mediaQuery.removeListener(handleScreenChange);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setSidebarOpen(!isSmallScreen);
+  }, [mindmapData, isSmallScreen]);
+
   const handleLocalNodeClick = (node) => {
     setSelectedNode(node);
+    if (isSmallScreen) {
+      setSidebarOpen(true);
+    }
     if (onNodeClick) onNodeClick(node);
   };
 
