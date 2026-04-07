@@ -38,77 +38,77 @@ export default function Hero() {
   const capabilities = [
     {
       icon: <FileText className="w-5 h-5" />,
-      title: 'Multi-Format Ingestion',
-      desc: 'Native parsing for PDF, DOCX, and PPTX files. The engine identifies headers, body text, lists, and structural relationships regardless of source formatting.',
-      metric: '100MB',
-      metricLabel: 'Max file size',
+      title: 'Document Intake',
+      desc: 'Upload PDF, DOCX, or PPTX files and IntelliMap extracts the key written content while preserving the original flow of ideas.',
+      metric: '3 Formats',
+      metricLabel: 'Supported files',
     },
     {
       icon: <Target className="w-5 h-5" />,
-      title: 'Contextual Node Summaries',
-      desc: 'Clicking any node in the generated map reveals a concise, AI-generated summary of that specific section, allowing for rapid comprehension.',
-      metric: 'Instant',
-      metricLabel: 'Extraction time',
+      title: 'Smart Summaries',
+      desc: 'Each branch is enriched with clear section-level summaries so you can understand important points without reading the full source repeatedly.',
+      metric: 'Section-level',
+      metricLabel: 'Insight depth',
     },
     {
       icon: <Clock className="w-5 h-5" />,
-      title: 'Local Persistence',
-      desc: 'Save your mind maps directly to your browser. Your library is persistent and private, isolated to your account using secure local storage.',
-      metric: 'Private',
-      metricLabel: 'Browser-native',
+      title: 'Reliable Processing',
+      desc: 'IntelliMap combines deterministic local structuring with AI refinement, then reuses results through caching for a faster repeat workflow.',
+      metric: 'Hybrid',
+      metricLabel: 'Processing model',
     },
     {
       icon: <Share2 className="w-5 h-5" />,
-      title: 'Export & Integration',
-      desc: 'Export interactive maps as PNGs for implementation into other workflow tools like Notion or Obsidian.',
+      title: 'Save & Export',
+      desc: 'Store maps in your personal library and export visuals as PNG for reporting, presentations, or documentation handoffs.',
       metric: 'PNG',
-      metricLabel: 'Export formats',
+      metricLabel: 'Export output',
     },
   ];
 
   const processSteps = [
     {
       num: '01',
-      title: 'File Ingestion',
-      desc: 'Drag and drop your unstructured documents up to 100MB. Our engine performs deep structural extraction for analysis.',
+      title: 'Upload Your Document',
+      desc: 'Add a PDF, DOCX, or PPTX file to begin. The system reads the document text and prepares it for structured mapping.',
     },
     {
       num: '02',
-      title: 'Intelligent Analysis',
-      desc: "Intellimap leverages Google Gemini to parse the document's logic, identifying hierarchical relationships and generating takeaways.",
+      title: 'Build Core Structure',
+      desc: 'A local analysis engine organizes major themes, supporting points, and hierarchy to create a dependable baseline map.',
     },
     {
       num: '03',
-      title: 'Interactive Mapping',
-      desc: 'Explore the resulting mind map on a dynamic canvas. Drill down into specific nodes to access contextual insights instantly.',
+      title: 'Enhance and Explore',
+      desc: 'AI refinement improves clarity of labels and summaries, and you can open any node to review focused insights on demand.',
     },
     {
       num: '04',
-      title: 'Library Archive',
-      desc: 'Save your mappings to your personal dashboard. Everything is stored locally in your browser for secure, permanent access.',
+      title: 'Save, Reuse, and Share',
+      desc: 'Keep completed maps in your dashboard, regenerate when needed, and export PNG snapshots for easy team communication.',
     },
   ];
 
   const faqs = [
     {
-      q: 'What AI technology powers the summary generation?',
-      a: 'We utilize Google Gemini to perform deep semantic analysis and high-accuracy node summary generation, ensuring you get the most relevant context from every document segment.',
+      q: 'How does IntelliMap generate the mind map?',
+      a: 'IntelliMap first creates a reliable local structure from your document, then applies AI refinement to improve clarity, naming, and section summaries.',
     },
     {
       q: 'Where is my data stored?',
-      a: "IntelliMap uses your browser's local storage to persist your generated maps. This means your data stays on your device and is only accessible when you are logged in to your account on this specific browser.",
+      a: "Saved maps are stored in your browser's local storage and associated with your signed-in profile on that browser.",
     },
     {
-      q: 'How accurate is the structural extraction?',
-      a: 'Our engine identifies the logical flow of headers, body text, and structural relationships, even in complex nested documents.',
+      q: 'What happens if AI refinement is unavailable?',
+      a: 'The platform still returns a complete locally generated map, so your workflow continues without interruption.',
     },
     {
-      q: 'Are my documents kept private?',
-      a: 'Yes, your documents are processed securely and are never used to train our models. Privacy and security are our top priority.',
+      q: 'Can I refresh results for the same file?',
+      a: 'Yes. You can regenerate a map to request a fresh pass, even when a cached result already exists.',
     },
     {
-      q: 'Can I export the mind maps?',
-      a: 'Absolutely. You can export your maps as high-resolution PNG images for presentations and for other workflows.',
+      q: 'Can I export and share mind maps?',
+      a: 'Yes. You can export maps as PNG images for presentations, documentation, and collaboration updates.',
     },
   ];
 

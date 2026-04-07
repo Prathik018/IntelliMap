@@ -145,7 +145,7 @@ function buildRadialMindmap(data) {
         type: 'smoothstep',
         animated: true,
         style: {
-          stroke: '#e2e8f0',
+          stroke: '#e2e8f',
           strokeWidth: 2,
           strokeDasharray: '5,5',
         },

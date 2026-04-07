@@ -331,7 +331,7 @@ export default function Dashboard() {
     }
   }, [isSignedIn, isLoaded, navigate, user?.id]);
 
-  const handleProcess = async (selectedFile) => {
+  const handleProcess = async (selectedFile, options = {}) => {
     if (!selectedFile) {
       setMindmapData(null);
       setSummaryData(null);
@@ -341,7 +341,7 @@ export default function Dashboard() {
     setIsProcessing(true);
     setFile(selectedFile);
     try {
-      const result = await processFile(selectedFile);
+      const result = await processFile(selectedFile, options);
       setMindmapData(result.mindmap);
       setSummaryData(result.summary);
       setShowUploader(false);
@@ -350,6 +350,11 @@ export default function Dashboard() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleRegenerate = async (selectedFile) => {
+    if (!selectedFile) return;
+    await handleProcess(selectedFile, { forceRefresh: true });
   };
 
   const handleSave = async () => {
@@ -571,7 +576,7 @@ export default function Dashboard() {
                 file={file}
                 mindmapData={mindmapData}
                 handleDownload={handleDownload}
-                handleRegenerate={handleProcess}
+                handleRegenerate={handleRegenerate}
                 handleSave={handleSave}
                 handleBack={() => {
                   setMindmapData(null);
