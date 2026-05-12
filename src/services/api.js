@@ -130,7 +130,7 @@ function hashText(text) {
 
 async function enhanceWithGemini(localResult, sourceText) {
   const model = genAI.getGenerativeModel({
-    model: 'gemini-3.1-flash-lite-preview',
+    model: 'gemini-3-flash-preview',
   });
 
   const languageLock = detectDominantScript(sourceText);
